@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml xmlns="https://developers.google.com/blockly/xml" is_dbot="true" collection="false">
+  <variables>
+    <variable id="v_bot_name">BotName</variable>
+    <variable id="v_entry_strategy">EntryStrategyMode</variable>
+    <variable id="v_gd_state">GoldDiggerState</variable>
+    <variable id="v_pred_digit">PredictionDigit</variable>
+    <variable id="v_contract_mode">SelectedContractStrategy</variable>
+    <variable id="v_entry_spotted">EntryConditionSpotted</variable>
+    <variable id="v_virtual_loss">VirtualEntryWouldLose</variable>
+    <variable id="v_last_buy_tick">LastPurchasedTickPrice</variable>
+    <variable id="v_entry">EntryDigit</variable>
+    <variable id="v_d1">D1</variable>
+    <variable id="v_d2">D2</variable>
+    <variable id="v_d3">D3</variable>
+    <variable id="v_d4">D4</variable>
+    <variable id="v_d5">D5</variable>
+    <variable id="v_c0">Count0</variable>
+    <variable id="v_c1">Count1</variable>
+    <variable id="v_seen">TicksSeen</variable>
+    <variable id="v_trades">vTrades</variable>
+    <variable id="v_price">MarketPrice</variable>
+    <variable id="v_last">LastDigit</variable>
+    <variable id="v_loss_count">LossCount</variable>
+  </variables>
+
+  <block type="trade_definition" id="gold_digger_trade_definition" deletable="false" x="0" y="60">
+    <statement name="TRADE_OPTIONS">
+      <block type="trade_definition_market" id="gd_market" deletable="false" movable="false">
+        <field name="MARKET_LIST">synthetic_index</field>
+        <field name="SUBMARKET_LIST">random_index</field>
+        <field name="SYMBOL_LIST">R_50</field>
+        <next>
+          <block type="trade_definition_tradetype" id="gd_tradetype" deletable="false" movable="false">
+            <field name="TRADETYPECAT_LIST">digits</field>
+            <field name="TRADETYPE_LIST">overunder</field>
+            <next>
+              <block type="trade_definition_contracttype" id="gd_contracttype" deletable="false" movable="false">
+                <field name="TYPE_LIST">both</field>
+                <next>
+                  <block type="trade_definition_candleinterval" id="gd_candleinterval" deletable="false" movable="false">
+                    <field name="CANDLEINTERVAL_LIST">60</field>
+                    <next>
+                      <block type="trade_definition_restartbuysell" id="gd_restartbuysell" deletable="false" movable="false">
+                        <field name="TIME_MACHINE_ENABLED">FALSE</field>
+                        <next>
+                          <block type="trade_definition_restartonerror" id="gd_restartonerror" deletable="false" movable="false">
+                            <field name="RESTARTONERROR">TRUE</field>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+
+    <statement name="INITIALIZATION">
+      <block type="variables_set" id="init_bot_name">
+        <field name="VAR" id="v_bot_name">BotName</field>
+        <value name="VALUE">
+          <block type="text" id="txt_gold_digger"><field name="TEXT">GOLD DIGGER</field></block>
+        </value>
+        <next>
+          <block type="variables_set" id="init_pred_digit">
+            <field name="VAR" id="v_pred_digit">PredictionDigit</field>
+            <value name="VALUE">
+              <block type="math_number" id="num_pred_1"><field name="NUM">1</field></block>
+            </value>
+            <next>
+              <block type="variables_set" id="init_gd_state_0">
+                <field name="VAR" id="v_gd_state">GoldDiggerState</field>
+                <value name="VALUE">
+                  <block type="math_number" id="num_state_0"><field name="NUM">0</field></block>
+                </value>
+                <next>
+                  <block type="variables_set" id="init_seen_0">
+                    <field name="VAR" id="v_seen">TicksSeen</field>
+                    <value name="VALUE">
+                      <block type="math_number" id="num_seen_0"><field name="NUM">0</field></block>
+                    </value>
+                    <next>
+                      <block type="variables_set" id="init_last_buy_tick">
+                        <field name="VAR" id="v_last_buy_tick">LastPurchasedTickPrice</field>
+                        <value name="VALUE">
+                          <block type="math_number" id="num_lbt_0"><field name="NUM">-1</field></block>
+                        </value>
+                        <next>
+                          <block type="notify" id="notify_startup_gold_digger">
+                            <field name="NOTIFICATION_TYPE">info</field>
+                            <field name="NOTIFICATION_SOUND">silent</field>
+                            <value name="MESSAGE">
+                              <block type="text" id="txt_startup_msg">
+                                <field name="TEXT">STRATEGY STARTED | Waiting for first entry</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+
+    <statement name="SUBMARKET">
+      <block type="trade_definition_tradeoptions" id="gd_tradeoptions">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" has_first_barrier="false" has_second_barrier="false" has_prediction="true"></mutation>
+        <field name="DURATIONTYPE_LIST">t</field>
+        <value name="DURATION">
+          <shadow type="math_number" id="gd_dur_1"><field name="NUM">1</field></shadow>
+        </value>
+        <value name="AMOUNT">
+          <shadow type="math_number" id="gd_amt_1"><field name="NUM">1</field></shadow>
+        </value>
+        <value name="PREDICTION">
+          <shadow type="math_number_positive" id="gd_pred_shadow" inline="true"><field name="NUM">1</field></shadow>
+          <block type="variables_get" id="gd_get_pred_digit">
+            <field name="VAR" id="v_pred_digit">PredictionDigit</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+
+  <block type="before_purchase" id="gd_before_purchase" deletable="false" x="0" y="760">
+    <statement name="BEFOREPURCHASE_STACK">
+      <block type="controls_if" id="gd_state_machine_router">
+        <mutation xmlns="http://www.w3.org/1999/xhtml" elseif="2"></mutation>
+        <!-- STATE 0: WAIT FOR FIRST ENTRY (DO NOT PLACE REAL TRADE) -->
+        <value name="IF0">
+          <block type="logic_compare" id="cmp_state_is_0">
+            <field name="OP">EQ</field>
+            <value name="A"><block type="variables_get" id="get_st_0"><field name="VAR" id="v_gd_state">GoldDiggerState</field></block></value>
+            <value name="B"><block type="math_number" id="n_st_0"><field name="NUM">0</field></block></value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="controls_if" id="if_first_entry_spotted">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+            <value name="IF0">
+              <block type="variables_get" id="chk_entry_0"><field name="VAR" id="v_entry_spotted">EntryConditionSpotted</field></block>
+            </value>
+            <statement name="DO0">
+              <block type="variables_set" id="set_state_to_1_virtual">
+                <field name="VAR" id="v_gd_state">GoldDiggerState</field>
+                <value name="VALUE"><block type="math_number" id="n_to_1"><field name="NUM">1</field></block></value>
+                <next>
+                  <block type="notify" id="notify_entry_spotted_test">
+                    <field name="NOTIFICATION_TYPE">info</field>
+                    <field name="NOTIFICATION_SOUND">silent</field>
+                    <value name="MESSAGE">
+                      <block type="text" id="txt_entry_spotted_test">
+                        <field name="TEXT">ENTRY SPOTTED | Testing entry for loss</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </statement>
+            <statement name="ELSE">
+              <block type="notify" id="notify_searching_losing_entry">
+                <field name="NOTIFICATION_TYPE">info</field>
+                <field name="NOTIFICATION_SOUND">silent</field>
+                <value name="MESSAGE">
+                  <block type="text" id="txt_searching_no_trade">
+                    <field name="TEXT">SEARCHING FOR LOSING ENTRY | NO TRADE</field>
+                  </block>
+                </value>
+              </block>
+            </statement>
+          </block>
+        </statement>
+
+        <!-- STATE 1: VIRTUAL/OBSERVATION ENTRY RESULT CHECK (NEVER PURCHASE THIS ENTRY) -->
+        <value name="IF1">
+          <block type="logic_compare" id="cmp_state_is_1">
+            <field name="OP">EQ</field>
+            <value name="A"><block type="variables_get" id="get_st_1"><field name="VAR" id="v_gd_state">GoldDiggerState</field></block></value>
+            <value name="B"><block type="math_number" id="n_st_1"><field name="NUM">1</field></block></value>
+          </block>
+        </value>
+        <statement name="DO1">
+          <block type="controls_if" id="if_virtual_entry_lost">
+            <mutation xmlns="http://www.w3.org/1999/xhtml" else="1"></mutation>
+            <value name="IF0">
+              <block type="variables_get" id="chk_v_loss"><field name="VAR" id="v_virtual_loss">VirtualEntryWouldLose</field></block>
+            </value>
+            <statement name="DO0">
+              <block type="variables_set" id="set_state_to_2_loss_confirmed">
+                <field name="VAR" id="v_gd_state">GoldDiggerState</field>
+                <value name="VALUE"><block type="math_number" id="n_to_2"><field name="NUM">2</field></block></value>
+                <next>
+                  <block type="notify" id="notify_loss_confirmed">
+                    <field name="NOTIFICATION_TYPE">warn</field>
+                    <field name="NOTIFICATION_SOUND">silent</field>
+                    <value name="MESSAGE">
+                      <block type="text" id="txt_loss_confirmed">
+                        <field name="TEXT">LOSS ENTRY CONFIRMED | Waiting for NEXT entry</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </statement>
+            <statement name="ELSE">
+              <block type="variables_set" id="reset_state_to_0_on_v_win">
+                <field name="VAR" id="v_gd_state">GoldDiggerState</field>
+                <value name="VALUE"><block type="math_number" id="n_back_0"><field name="NUM">0</field></block></value>
+                <next>
+                  <block type="notify" id="notify_virtual_win">
+                    <field name="NOTIFICATION_TYPE">info</field>
+                    <field name="NOTIFICATION_SOUND">silent</field>
+                    <value name="MESSAGE">
+                      <block type="text" id="txt_virtual_win">
+                        <field name="TEXT">VIRTUAL WIN | No trade | Continue searching for losing entry</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+
+        <!-- STATE 2: LOSS CONFIRMED -> WAIT FOR NEXT VALID ENTRY -> EXECUTE REAL TRADE -->
+        <value name="IF2">
+          <block type="logic_compare" id="cmp_state_is_2">
+            <field name="OP">EQ</field>
+            <value name="A"><block type="variables_get" id="get_st_2"><field name="VAR" id="v_gd_state">GoldDiggerState</field></block></value>
+            <value name="B"><block type="math_number" id="n_st_2"><field name="NUM">2</field></block></value>
+          </block>
+        </value>
+        <statement name="DO2">
+          <block type="controls_if" id="if_next_entry_spotted_for_real_trade">
+            <value name="IF0">
+              <block type="logic_operation" id="and_next_entry_and_not_duplicate_tick">
+                <field name="OP">AND</field>
+                <value name="A">
+                  <block type="variables_get" id="chk_entry_2"><field name="VAR" id="v_entry_spotted">EntryConditionSpotted</field></block>
+                </value>
+                <value name="B">
+                  <block type="logic_compare" id="cmp_no_duplicate_tick">
+                    <field name="OP">NEQ</field>
+                    <value name="A"><block type="variables_get" id="get_mkt_price"><field name="VAR" id="v_price">MarketPrice</field></block></value>
+                    <value name="B"><block type="variables_get" id="get_last_buy_p"><field name="VAR" id="v_last_buy_tick">LastPurchasedTickPrice</field></block></value>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="DO0">
+              <block type="variables_set" id="set_state_to_3_real_trade">
+                <field name="VAR" id="v_gd_state">GoldDiggerState</field>
+                <value name="VALUE"><block type="math_number" id="n_to_3"><field name="NUM">3</field></block></value>
+                <next>
+                  <block type="variables_set" id="record_purchased_tick_price">
+                    <field name="VAR" id="v_last_buy_tick">LastPurchasedTickPrice</field>
+                    <value name="VALUE"><block type="variables_get" id="val_mkt_price"><field name="VAR" id="v_price">MarketPrice</field></block></value>
+                    <next>
+                      <block type="notify" id="notify_next_entry_real_trade">
+                        <field name="NOTIFICATION_TYPE">success</field>
+                        <field name="NOTIFICATION_SOUND">silent</field>
+                        <value name="MESSAGE">
+                          <block type="text" id="txt_next_entry_exec">
+                            <field name="TEXT">NEXT ENTRY SPOTTED | EXECUTING REAL TRADE</field>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="notify" id="notify_real_trade_in_progress">
+                            <field name="NOTIFICATION_TYPE">info</field>
+                            <field name="NOTIFICATION_SOUND">silent</field>
+                            <value name="MESSAGE">
+                              <block type="text" id="txt_real_in_progress">
+                                <field name="TEXT">REAL TRADE IN PROGRESS | Waiting for result</field>
+                              </block>
+                            </value>
+                            <next>
+                              <!-- MANDATORY PURCHASE BLOCK -->
+                              <block type="purchase" id="gd_mandatory_purchase_block">
+                                <field name="PURCHASE_LIST">DIGITOVER</field>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+
+  <block type="after_purchase" id="gd_after_purchase" x="780" y="760">
+    <statement name="AFTERPURCHASE_STACK">
+      <!-- AFTER THE REAL TRADE: RESET STATE MACHINE TO 0 AND RESTART LOSS-ENTRY -> NEXT-ENTRY PROCESS -->
+      <block type="variables_set" id="reset_gd_state_after_real_trade">
+        <field name="VAR" id="v_gd_state">GoldDiggerState</field>
+        <value name="VALUE">
+          <block type="math_number" id="n_reset_0"><field name="NUM">0</field></block>
+        </value>
+        <next>
+          <block type="notify" id="notify_real_trade_completed">
+            <field name="NOTIFICATION_TYPE">success</field>
+            <field name="NOTIFICATION_SOUND">silent</field>
+            <value name="MESSAGE">
+              <block type="text" id="txt_real_trade_completed">
+                <field name="TEXT">REAL TRADE COMPLETED | Restarting loss-entry search</field>
+              </block>
+            </value>
+            <next>
+              <block type="trade_again" id="gd_trade_again"></block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+
+  <block type="tick_analysis" id="gd_tick_analysis" x="0" y="1480">
+    <statement name="TICKANALYSIS_STACK">
+      <block type="variables_set" id="gd_shift_d1">
+        <field name="VAR" id="v_d1">D1</field>
+        <value name="VALUE"><block type="variables_get" id="gd_g_d2"><field name="VAR" id="v_d2">D2</field></block></value>
+        <next>
+          <block type="variables_set" id="gd_shift_d2">
+            <field name="VAR" id="v_d2">D2</field>
+            <value name="VALUE"><block type="variables_get" id="gd_g_d3"><field name="VAR" id="v_d3">D3</field></block></value>
+            <next>
+              <block type="variables_set" id="gd_shift_d3">
+                <field name="VAR" id="v_d3">D3</field>
+                <value name="VALUE"><block type="variables_get" id="gd_g_d4"><field name="VAR" id="v_d4">D4</field></block></value>
+                <next>
+                  <block type="variables_set" id="gd_shift_d4">
+                    <field name="VAR" id="v_d4">D4</field>
+                    <value name="VALUE"><block type="variables_get" id="gd_g_d5"><field name="VAR" id="v_d5">D5</field></block></value>
+                    <next>
+                      <block type="variables_set" id="gd_set_d5">
+                        <field name="VAR" id="v_d5">D5</field>
+                        <value name="VALUE"><block type="last_digit" id="gd_last_digit"></block></value>
+                        <next>
+                          <block type="variables_set" id="gd_set_last">
+                            <field name="VAR" id="v_last">LastDigit</field>
+                            <value name="VALUE"><block type="last_digit" id="gd_last_digit_2"></block></value>
+                            <next>
+                              <block type="variables_set" id="gd_set_price">
+                                <field name="VAR" id="v_price">MarketPrice</field>
+                                <value name="VALUE"><block type="tick" id="gd_tick_val"></block></value>
+                                <next>
+                                  <block type="math_change" id="gd_inc_seen">
+                                    <field name="VAR" id="v_seen">TicksSeen</field>
+                                    <value name="DELTA"><block type="math_number" id="gd_inc_1"><field name="NUM">1</field></block></value>
+                                    <next>
+                                      <!-- Evaluate whether virtual entry would lose (LastDigit <= PredictionDigit for OVER) -->
+                                      <block type="variables_set" id="gd_eval_virtual_loss">
+                                        <field name="VAR" id="v_virtual_loss">VirtualEntryWouldLose</field>
+                                        <value name="VALUE">
+                                          <block type="logic_compare" id="gd_cmp_loss">
+                                            <field name="OP">LTE</field>
+                                            <value name="A"><block type="variables_get" id="gd_g_d5_loss"><field name="VAR" id="v_d5">D5</field></block></value>
+                                            <value name="B"><block type="variables_get" id="gd_g_pred_loss"><field name="VAR" id="v_pred_digit">PredictionDigit</field></block></value>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <!-- Evaluate normal entry condition: TicksSeen >= 3 AND D5 in [D1..D4] AND (D5 <= PredictionDigit) -->
+                                          <block type="variables_set" id="gd_eval_entry_spotted">
+                                            <field name="VAR" id="v_entry_spotted">EntryConditionSpotted</field>
+                                            <value name="VALUE">
+                                              <block type="logic_operation" id="gd_and_entry_all">
+                                                <field name="OP">AND</field>
+                                                <value name="A">
+                                                  <block type="logic_compare" id="gd_seen_gte_3">
+                                                    <field name="OP">GTE</field>
+                                                    <value name="A"><block type="variables_get" id="gd_g_seen"><field name="VAR" id="v_seen">TicksSeen</field></block></value>
+                                                    <value name="B"><block type="math_number" id="gd_n_3"><field name="NUM">3</field></block></value>
+                                                  </block>
+                                                </value>
+                                                <value name="B">
+                                                  <block type="logic_operation" id="gd_and_repeat_target">
+                                                    <field name="OP">AND</field>
+                                                    <value name="A">
+                                                      <block type="logic_operation" id="gd_or_d1234">
+                                                        <field name="OP">OR</field>
+                                                        <value name="A">
+                                                          <block type="logic_operation" id="gd_or_d12">
+                                                            <field name="OP">OR</field>
+                                                            <value name="A">
+                                                              <block type="logic_compare" id="gd_eq_d1">
+                                                                <field name="OP">EQ</field>
+                                                                <value name="A"><block type="variables_get" id="gd_d5_1"><field name="VAR" id="v_d5">D5</field></block></value>
+                                                                <value name="B"><block type="variables_get" id="gd_d1_1"><field name="VAR" id="v_d1">D1</field></block></value>
+                                                              </block>
+                                                            </value>
+                                                            <value name="B">
+                                                              <block type="logic_compare" id="gd_eq_d2">
+                                                                <field name="OP">EQ</field>
+                                                                <value name="A"><block type="variables_get" id="gd_d5_2"><field name="VAR" id="v_d5">D5</field></block></value>
+                                                                <value name="B"><block type="variables_get" id="gd_d2_2"><field name="VAR" id="v_d2">D2</field></block></value>
+                                                              </block>
+                                                            </value>
+                                                          </block>
+                                                        </value>
+                                                        <value name="B">
+                                                          <block type="logic_operation" id="gd_or_d34">
+                                                            <field name="OP">OR</field>
+                                                            <value name="A">
+                                                              <block type="logic_compare" id="gd_eq_d3">
+                                                                <field name="OP">EQ</field>
+                                                                <value name="A"><block type="variables_get" id="gd_d5_3"><field name="VAR" id="v_d5">D5</field></block></value>
+                                                                <value name="B"><block type="variables_get" id="gd_d3_3"><field name="VAR" id="v_d3">D3</field></block></value>
+                                                              </block>
+                                                            </value>
+                                                            <value name="B">
+                                                              <block type="logic_compare" id="gd_eq_d4">
+                                                                <field name="OP">EQ</field>
+                                                                <value name="A"><block type="variables_get" id="gd_d5_4"><field name="VAR" id="v_d5">D5</field></block></value>
+                                                                <value name="B"><block type="variables_get" id="gd_d4_4"><field name="VAR" id="v_d4">D4</field></block></value>
+                                                              </block>
+                                                            </value>
+                                                          </block>
+                                                        </value>
+                                                      </block>
+                                                    </value>
+                                                    <value name="B">
+                                                      <block type="logic_compare" id="gd_target_lte_pred">
+                                                        <field name="OP">LTE</field>
+                                                        <value name="A"><block type="variables_get" id="gd_d5_t"><field name="VAR" id="v_d5">D5</field></block></value>
+                                                        <value name="B"><block type="variables_get" id="gd_pred_t"><field name="VAR" id="v_pred_digit">PredictionDigit</field></block></value>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>
